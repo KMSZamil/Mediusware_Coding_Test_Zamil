@@ -56,46 +56,56 @@
 
                     <tbody>
 
-                        @if (isset($products))
-                            @foreach ($products as $item)
-                                <tr>
-                                    <td>{{ $item->product_data->id }}</td>
-                                    <td>{{ $item->product_data->title }} <br> Created at :
-                                        {{ date('d-M-Y', strtotime($item->product_data->created_at)) }}</td>
-                                    <td>{{ Str::limit($item->product_data->description, 50) }}</td>
-                                    <td>
-                                        <dl class="row mb-0" style="height: 80px; overflow: hidden" id="variant">
-
-                                            <dt class="col-sm-3 pb-0">
-                                                {{ !empty($item->product_variant_one_data->variant) ? $item->product_variant_one_data->variant : '' }}
-                                                {{ !empty($item->product_variant_two_data->variant) ? '/ ' . $item->product_variant_two_data->variant : '' }}
-                                                {{ !empty($item->product_variant_three_data->variant) ? '/ ' . $item->product_variant_three_data->variant : '' }}
-                                            </dt>
-                                            <dd class="col-sm-9">
-                                                <dl class="row mb-0">
-                                                    <dt class="col-sm-4 pb-0">Price : {{ number_format($item->price, 2) }}
-                                                    </dt>
-                                                    <dd class="col-sm-8 pb-0">InStock :
-                                                        {{ number_format($item->stock, 2) }}
-                                                    </dd>
-                                                </dl>
-                                            </dd>
-                                        </dl>
-                                        <button onclick="$('#variant').toggleClass('h-auto')"
-                                            class="btn btn-sm btn-link">Show more</button>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group btn-group-sm">
-                                            <a href="{{ route('product.edit', 1) }}" class="btn btn-success">Edit</a>
-                                        </div>
-                                    </td>
-                                </tr>
+                        @if (isset($product_data))
+                            @foreach ($product_data as $items)
+                                @foreach ($items as $item)
+                                    <tr>
+                                        @if ($loop->first)
+                                            <td rowspan="{{ count($items) }}">{{ $item->product_data->id }}</td>
+                                            <td rowspan="{{ count($items) }}">{{ $item->product_data->title }} <br> Created
+                                                at :
+                                                {{ date('d-M-Y', strtotime($item->product_data->created_at)) }}</td>
+                                            <td rowspan="{{ count($items) }}">
+                                                {{ Str::limit($item->product_data->description, 50) }}</td>
+                                        @endif
+                                        <td>
+                                            <dl class="row mb-0" style="height: 80px; overflow: hidden" id="variant">
+                                                <dt class="col-sm-3 pb-0">
+                                                    {{ !empty($item->product_variant_one_data->variant) ? $item->product_variant_one_data->variant : '' }}
+                                                    {{ !empty($item->product_variant_two_data->variant) ? '/ ' . $item->product_variant_two_data->variant : '' }}
+                                                    {{ !empty($item->product_variant_three_data->variant) ? '/ ' . $item->product_variant_three_data->variant : '' }}
+                                                </dt>
+                                                <dd class="col-sm-9">
+                                                    <dl class="row mb-0">
+                                                        <dt class="col-sm-4 pb-0">Price :
+                                                            {{ number_format($item->price, 2) }}
+                                                        </dt>
+                                                        <dd class="col-sm-8 pb-0">InStock :
+                                                            {{ number_format($item->stock, 2) }}
+                                                        </dd>
+                                                    </dl>
+                                                </dd>
+                                            </dl>
+                                            @if ($loop->last)
+                                                <button onclick="$('#variant').toggleClass('h-auto')"
+                                                    class="btn btn-sm btn-link">Show more</button>
+                                            @endif
+                                        </td>
+                                        @if ($loop->first)
+                                        <td rowspan="{{ count($items) }}">
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="{{ route('product.edit', 1) }}" class="btn btn-success">Edit</a>
+                                            </div>
+                                        </td>
+                                        @endif
+                                    </tr>
+                                @endforeach
                             @endforeach
                         @endif
 
                     </tbody>
                 </table>
-                {{ $products->links() }}
+                {{-- {{ $products->links() }} --}}
             </div>
 
         </div>

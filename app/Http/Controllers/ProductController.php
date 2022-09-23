@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\ProductVariant;
-use App\Models\ProductVariantPrice;
 use App\Models\Variant;
 use Illuminate\Http\Request;
+use App\Models\ProductVariant;
+use Illuminate\Support\Facades\DB;
+use App\Models\ProductVariantPrice;
 
 class ProductController extends Controller
 {
@@ -18,11 +19,14 @@ class ProductController extends Controller
     public function index()
     {
         //$products = Product::with(['product_variant'])->where('id',1)->get();
-        $products = ProductVariantPrice::with(['product_data', 'product_variant_one_data', 'product_variant_two_data', 'product_variant_three_data'])->paginate(2);
+        $products = ProductVariantPrice::with(['product_data', 'product_variant_one_data', 'product_variant_two_data', 'product_variant_three_data'])->get();
+        $product_data =  $products->groupBy('product_id');
+        //return $product_data;
+        $products_dist = DB::select("select product_id, count('product_id') as prod_count from product_variant_prices group by product_id");
         $dist_prod = ProductVariantPrice::distinct()->count('product_id');
-        //return $products;
         $variants = Variant::all();
-        return view('products.index',compact('products', 'variants', 'dist_prod'));
+        //return $products_dist;
+        return view('products.index', compact('products', 'variants', 'dist_prod', 'products_dist', 'product_data'));
     }
 
     /**
@@ -44,7 +48,6 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-
     }
 
 
@@ -56,7 +59,6 @@ class ProductController extends Controller
      */
     public function show($product)
     {
-
     }
 
     /**
