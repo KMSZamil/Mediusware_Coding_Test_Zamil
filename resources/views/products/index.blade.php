@@ -16,7 +16,7 @@
                 </div>
                 <div class="col-md-2">
                     <select name="variant" id="" class="form-control">
-                        <option value="" disabled>Select a Variant</option>
+                        <option value="">Select a Variant</option>
                         @foreach ($variants as $item)
                             <option disabled>{{ $item[0]->title }}</option>
                             @foreach ($item as $row)
@@ -65,6 +65,9 @@
                     <tbody>
 
                         @if (isset($product_data))
+                            @php
+                                $i = 0;
+                            @endphp
                             @foreach ($product_data as $items)
                                 @foreach ($items as $item)
                                     <tr>
@@ -76,32 +79,35 @@
                                                 {{ date('d-M-Y', strtotime($item->product_data->created_at)) }}</td>
                                             <td rowspan="{{ count($items) }}">
                                                 {{ Str::limit($item->product_data->description, 50) }}</td>
-                                        @endif
-                                        <td>
-                                            <dl class="row mb-0" style="height: 20px; overflow: hidden"
-                                                id="variant{{ $item->product_data->id }}">
-                                                <dt class="col-sm-3 pb-0">
-                                                    {{ !empty($item->product_variant_one_data->variant) ? $item->product_variant_one_data->variant : '' }}
-                                                    {{ !empty($item->product_variant_two_data->variant) ? ' / ' . $item->product_variant_two_data->variant : '' }}
-                                                    {{ !empty($item->product_variant_three_data->variant) ? ' / ' . $item->product_variant_three_data->variant : '' }}
-                                                </dt>
-                                                <dd class="col-sm-9">
-                                                    <dl class="row mb-0">
-                                                        <dt class="col-sm-4 pb-0">Price :
-                                                            {{ number_format($item->price, 2) }}
+
+                                            <td>
+                                                <dl class="row mb-0 variant{{ $i }}"
+                                                    style="height: 160px; overflow: hidden">
+                                                @foreach ($items as $item)
+                                                        <dt class="col-sm-3 pb-0">
+                                                            {{ !empty($item->product_variant_one_data->variant) ? $item->product_variant_one_data->variant : '' }}
+                                                            {{ !empty($item->product_variant_two_data->variant) ? ' / ' . $item->product_variant_two_data->variant : '' }}
+                                                            {{ !empty($item->product_variant_three_data->variant) ? ' / ' . $item->product_variant_three_data->variant : '' }}
                                                         </dt>
-                                                        <dd class="col-sm-8 pb-0">InStock :
-                                                            {{ number_format($item->stock, 2) }}
+                                                        <dd class="col-sm-9">
+                                                            <dl class="row mb-0">
+                                                                <dt class="col-sm-4 pb-0">Price :
+                                                                    {{ number_format($item->price, 2) }}
+                                                                </dt>
+                                                                <dd class="col-sm-8 pb-0">InStock :
+                                                                    {{ number_format($item->stock, 2) }}
+                                                                </dd>
+                                                            </dl>
                                                         </dd>
+                                                        @endforeach
                                                     </dl>
-                                                </dd>
-                                            </dl>
-                                            @if ($loop->last)
+                                                {{-- @if ($loop->last) --}}
                                                 <button
-                                                    onclick="$('#variant{{ $item->product_data->id }}').toggleClass('h-auto')"
+                                                    onclick="$('.variant{{ $i }}').toggleClass('h-auto')"
                                                     class="btn btn-sm btn-link">Show more</button>
-                                            @endif
-                                        </td>
+                                                {{-- @endif --}}
+                                            </td>
+                                        @endif
                                         @if ($loop->first)
                                             <td rowspan="{{ count($items) }}">
                                                 <div class="btn-group btn-group-sm">
@@ -111,6 +117,9 @@
                                             </td>
                                         @endif
                                     </tr>
+                                    @php
+                                        $i++;
+                                    @endphp
                                 @endforeach
                             @endforeach
                         @endif
