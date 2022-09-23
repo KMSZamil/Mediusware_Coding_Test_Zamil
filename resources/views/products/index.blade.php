@@ -15,7 +15,7 @@
                 </div>
                 <div class="col-md-2">
                     <select name="variant" id="" class="form-control">
-                         <option value="">Select a Variant</option>
+                        <option value="">Select a Variant</option>
                         @foreach ($variants as $row)
                             <option value="{{ $row->id }}">{{ $row->title }}</option>
                         @endforeach
@@ -94,8 +94,8 @@
                         @endif
 
                     </tbody>
-
                 </table>
+                {{ $products->links() }}
             </div>
 
         </div>

@@ -18,7 +18,7 @@ class ProductController extends Controller
     public function index()
     {
         //$products = Product::with(['product_variant'])->where('id',1)->get();
-        $products = ProductVariantPrice::with(['product_data', 'product_variant_one_data', 'product_variant_two_data', 'product_variant_three_data'])->get();
+        $products = ProductVariantPrice::with(['product_data', 'product_variant_one_data', 'product_variant_two_data', 'product_variant_three_data'])->paginate(2);
         $dist_prod = ProductVariantPrice::distinct()->count('product_id');
         //return $products;
         $variants = Variant::all();
