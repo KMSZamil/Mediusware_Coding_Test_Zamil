@@ -17,7 +17,11 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('products.index');
+        //$products = Product::with(['product_variant'])->where('id',1)->get();
+        $products = ProductVariantPrice::with(['product_data', 'product_variant_one_data', 'product_variant_two_data', 'product_variant_three_data'])->get();
+
+        //return $products;
+        return view('products.index',compact('products'));
     }
 
     /**
