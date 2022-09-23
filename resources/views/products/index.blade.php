@@ -15,7 +15,10 @@
                 </div>
                 <div class="col-md-2">
                     <select name="variant" id="" class="form-control">
-
+                         <option value="">Select a Variant</option>
+                        @foreach ($variants as $row)
+                            <option value="{{ $row->id }}">{{ $row->title }}</option>
+                        @endforeach
                     </select>
                 </div>
 
@@ -54,7 +57,6 @@
                     <tbody>
 
                         @if (isset($products))
-
                             @foreach ($products as $item)
                                 <tr>
                                     <td>{{ $item->product_data->id }}</td>
@@ -65,14 +67,16 @@
                                         <dl class="row mb-0" style="height: 80px; overflow: hidden" id="variant">
 
                                             <dt class="col-sm-3 pb-0">
-                                                {{ !empty($item->product_variant_one_data->variant) ? $item->product_variant_one_data->variant : ''}}
-                                                {{ !empty($item->product_variant_two_data->variant) ? '/ '.$item->product_variant_two_data->variant : '' }} {{ !empty($item->product_variant_three_data->variant) ? '/ '.$item->product_variant_three_data->variant : ''}}
+                                                {{ !empty($item->product_variant_one_data->variant) ? $item->product_variant_one_data->variant : '' }}
+                                                {{ !empty($item->product_variant_two_data->variant) ? '/ ' . $item->product_variant_two_data->variant : '' }}
+                                                {{ !empty($item->product_variant_three_data->variant) ? '/ ' . $item->product_variant_three_data->variant : '' }}
                                             </dt>
                                             <dd class="col-sm-9">
                                                 <dl class="row mb-0">
                                                     <dt class="col-sm-4 pb-0">Price : {{ number_format($item->price, 2) }}
                                                     </dt>
-                                                    <dd class="col-sm-8 pb-0">InStock : {{ number_format($item->stock, 2) }}
+                                                    <dd class="col-sm-8 pb-0">InStock :
+                                                        {{ number_format($item->stock, 2) }}
                                                     </dd>
                                                 </dl>
                                             </dd>
@@ -99,7 +103,7 @@
         <div class="card-footer">
             <div class="row justify-content-between">
                 <div class="col-md-6">
-                    <p>Showing 1 to 10 out of 100</p>
+                    <p>Showing {{ $dist_prod }} to {{ $dist_prod }} out of {{ $dist_prod }}</p>
                 </div>
                 <div class="col-md-2">
 

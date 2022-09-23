@@ -19,9 +19,10 @@ class ProductController extends Controller
     {
         //$products = Product::with(['product_variant'])->where('id',1)->get();
         $products = ProductVariantPrice::with(['product_data', 'product_variant_one_data', 'product_variant_two_data', 'product_variant_three_data'])->get();
-
+        $dist_prod = ProductVariantPrice::distinct()->count('product_id');
         //return $products;
-        return view('products.index',compact('products'));
+        $variants = Variant::all();
+        return view('products.index',compact('products', 'variants', 'dist_prod'));
     }
 
     /**
