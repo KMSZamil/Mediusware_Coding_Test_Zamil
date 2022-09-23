@@ -18,15 +18,53 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //$products = Product::with(['product_variant'])->where('id',1)->get();
-        $products = ProductVariantPrice::with(['product_data', 'product_variant_one_data', 'product_variant_two_data', 'product_variant_three_data'])->get();
+        $products = ProductVariantPrice::with([
+            'product_data', 'product_variant_one_data', 'product_variant_two_data', 'product_variant_three_data'
+        ])->paginate(10);
+        //return $products;
         $product_data =  $products->groupBy('product_id');
-        //return $product_data;
-        $products_dist = DB::select("select product_id, count('product_id') as prod_count from product_variant_prices group by product_id");
-        $dist_prod = ProductVariantPrice::distinct()->count('product_id');
-        $variants = Variant::all();
-        //return $products_dist;
-        return view('products.index', compact('products', 'variants', 'dist_prod', 'products_dist', 'product_data'));
+        //return $products;
+
+        $variants = DB::select("SELECT distinct variant_id, variant, v.title
+                        FROM product_variants pv
+                        inner join variants v on pv.variant_id = v.id
+                        ");
+        $variants =  collect($variants)->groupBy('title');
+        //return $variants;
+        return view('products.index', compact('products', 'variants', 'product_data'));
+    }
+
+    public function product_filter()
+    {
+        $title = request()->title;
+        $variant = request()->variant;
+        $price_from = request()->price_from;
+        $price_to = request()->price_to;
+        $date = request()->date;
+
+        $products = ProductVariantPrice::with([
+            'product_data'
+            => function ($query) use ($title, $date) {
+                $query->orWhere('title', 'like %', $title . '%')->orWhere('created_at', $date);
+            }, 'product_variant_one_data', 'product_variant_two_data', 'product_variant_three_data'
+        ])
+            ->whereBetween('price', [$price_from, $price_to])
+            ->orWhere('product_variant_one', $variant)
+            ->orWhere('product_variant_two', $variant)
+            ->orWhere('product_variant_three', $variant)
+
+            ->paginate(10);
+        //return $products;
+        $product_data =  $products->groupBy('product_id');
+        //return $products;
+
+        $variants = DB::select("SELECT distinct variant_id, variant, v.title
+                        FROM product_variants pv
+                        inner join variants v on pv.variant_id = v.id
+                        ");
+        $variants =  collect($variants)->groupBy('title');
+        //return $variants;
+        return view('products.index', compact('products', 'variants', 'product_data'));
     }
 
     /**

@@ -11,7 +11,7 @@ class ProductVariantPrice extends Model
 
     public function product_data()
     {
-        return $this->belongsTo(Product::class, 'product_id', 'id');
+        return $this->hasOne(Product::class, 'id', 'product_id');
     }
 
     public function product_variant_one_data()
